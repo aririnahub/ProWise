@@ -1,6 +1,7 @@
 package com.example.ourpro.bottomnav.profile;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -142,6 +144,7 @@ public class AccountSettingFragment extends Fragment {
             saveFullName();
             saveGender();
             saveBirthday();
+            Toast.makeText(requireContext(), "Сохранено", Toast.LENGTH_SHORT).show();
         });
 
         binding.profileButton.setOnClickListener(v -> {
@@ -230,13 +233,38 @@ public class AccountSettingFragment extends Fragment {
             if (!surname.isEmpty() && !name.isEmpty()) {
                 userUpdates.put("surname", surname);
                 userUpdates.put("name", name);
+
+                //скрыть клавиатуру
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                View view = requireActivity().getCurrentFocus();
+                if (view != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+
+
             } else {
+
                 Toast.makeText(requireContext(), "Фамилия и Имя должны быть заполнены", Toast.LENGTH_SHORT).show();
             }
             if (!dadsName.isEmpty()) {
                 userUpdates.put("fathersName", dadsName);
+
+                //скрыть клавиатуру
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                View view = requireActivity().getCurrentFocus();
+                if (view != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
             }
             userUpdates.put("aboutMyself", aboutMyself);
+
+            //скрыть клавиатуру
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            View view = requireActivity().getCurrentFocus();
+            if (view != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
 
             String userId = user.getUid();
             databaseReference.child(userId).updateChildren(userUpdates)
